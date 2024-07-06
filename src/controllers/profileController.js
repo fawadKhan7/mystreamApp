@@ -11,6 +11,7 @@ class ProfileController {
 
     static login = asyncHandler(async (req, res) => {
         const { email, password } = req.body;
+        console.log(email, password)
         const { profile, token } = await ProfileService.login(email, password);
         res.send({ profile, token });
     })

@@ -40,15 +40,6 @@ const Profile = sequelize.define('Profile', {
         type: DataTypes.ENUM('user', 'host', 'superadmin'),
         defaultValue: 'user',
     }
-    // ,
-    // isMuted: {
-    //     type: DataTypes.BOOLEAN,
-    //     defaultValue: false,
-    // },
-    // isBanned: {
-    //     type: DataTypes.BOOLEAN,
-    //     defaultValue: false,
-    // },
 }, {
     timestamps: true,
 });

@@ -7,10 +7,11 @@ const sequelize = require('./config/database');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
-const { addOnlineUser, removeOnlineUser, streamingChannels } = require('./onlineUsers');
+const { addOnlineUser, removeOnlineUser, streamingChannels, onlineUsers } = require('./onlineUsers');
 const Channel = require('./models/channel');
 const globals = require('./global');
 const ProfileService = require('./services/profileService');
+const Profile = require('./models/profile');
 
 require('dotenv').config();
 
@@ -40,7 +41,7 @@ io.on('connection', async (socket) => {
     }
 
     // Fetch user profile from userId
-    const profile = await ProfileService.fetchProfile(userId);
+    const profile = await Profile.findByPk(userId);
 
     if (!profile) {
         console.log(`User ${userId} not found`);
@@ -93,7 +94,7 @@ io.on('connection', async (socket) => {
 
     socket.on('sendMessage', async (data) => {
         const { userId, channelId, message } = data;
-
+        console.log({ onlineUsers })
         try {
             // Fetch profile and channel
             const profile = await ProfileService.fetchProfile(userId);
@@ -116,10 +117,10 @@ io.on('connection', async (socket) => {
                 return;
             }
 
-            if (!channel.followers.includes(userId)) {
-                console.log(`User ${userId} is not following Channel ${channelId}`);
-                return;
-            }
+            // if (!channel.followers.includes(userId)) {
+            //     console.log(`User ${userId} is not following Channel ${channelId}`);
+            //     return;
+            // }
 
             // Emit message event to channel
             io.to(channelId).emit('newMessage', {

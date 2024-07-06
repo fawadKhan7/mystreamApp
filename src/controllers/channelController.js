@@ -45,7 +45,6 @@ class ChannelController {
         const channel = await ChannelService.unfollowChannel(req.user.id, id);
         res.send(channel);
     })
-
     // Delete a channel
     static deleteChannel = asyncHandler(async (req, res) => {
         const { id } = req.params;
@@ -110,7 +109,6 @@ class ChannelController {
             throw new ApiError('This channel is suspended')
         }
     })
-
 
     static promoteUserToAdmin = asyncHandler(async (req, res) => {
         const { channelId, targetUserId } = req.body;
