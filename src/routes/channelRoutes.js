@@ -14,7 +14,7 @@ router.put('/unfollow/:id', authMiddleware, channelController.unfollowChannel);
 //HOST ROUTES
 router.put('/promote', authMiddleware, channelController.promoteUserToAdmin);
 router.put('/demote', authMiddleware, channelController.demoteUserFromAdmin);
-// router.post('/start-stream', authMiddleware, isHost, channelController.startStream);
+// router.post('/start-stream', authMiddleware, channelController.startStream);
 router.post('/start-stream', channelController.startStream);
 
 

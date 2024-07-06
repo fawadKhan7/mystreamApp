@@ -68,7 +68,7 @@ class ProfileController {
     static muteUser = asyncHandler(async (req, res) => {
         const { id } = req.params
         const channel = await ChannelService.fetchChannel(req.body.channelId)
-        if (req.user.role == "host" || req.user.id == channel.adminId) {
+        if (req.user.role == "superadmin" || req.user.role == "host" || req.user.id == channel.adminId) {
 
             if (channel.mutedUsers.includes(id)) {
                 throw new ApiError("This user is already muted")
@@ -84,7 +84,7 @@ class ProfileController {
     static unmuteUser = asyncHandler(async (req, res) => {
         const { id } = req.params
         const channel = await ChannelService.fetchChannel(req.body.channelId)
-        if (req.user.role == "host" || req.user.id == channel.adminId) {
+        if (req.user.role == "superadmin" || req.user.role == "host" || req.user.id == channel.adminId) {
 
             if (!channel.mutedUsers.includes(id)) {
                 throw new ApiError("This user is already unmuted")
@@ -100,7 +100,7 @@ class ProfileController {
     static banUser = asyncHandler(async (req, res) => {
         const { id } = req.params
         const channel = await ChannelService.fetchChannel(req.body.channelId)
-        if (req.user.role == "host" || req.user.id == channel.adminId) {
+        if (req.user.role == "superadmin" || req.user.role == "host" || req.user.id == channel.adminId) {
             if (channel.bannedUsers.includes(id)) {
                 throw new ApiError("This user is already banned")
             }
@@ -116,7 +116,7 @@ class ProfileController {
         const { id } = req.params
         const channel = await ChannelService.fetchChannel(req.body.channelId)
 
-        if (req.user.role == "host" || req.user.id == channel.adminId) {
+        if (req.user.role == "superadmin" || req.user.role == "host" || req.user.id == channel.adminId) {
 
             if (!channel.bannedUsers.includes(id)) {
                 throw new ApiError("This user is already unbanned")
