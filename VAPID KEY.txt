@@ -1,0 +1,38 @@
+create any file.js
+
+first run this in terminal
+
+npm install web-push
+
+Then in your file paste this
+////////////
+
+const webPush = require('web-push');
+
+const vapidKeys = webPush.generateVAPIDKeys();
+
+console.log('VAPID Public Key:', vapidKeys.publicKey);
+console.log('VAPID Private Key:', vapidKeys.privateKey);
+
+////
+
+Run this file and in your terminal you will get these key 
+In you .env file paste these key
+
+VAPID_PUBLIC_KEY = your public key
+VAPID_PRIVATE_KEY = your private key
+
+
+You Will require these keys in your .env file
+
+PORT=
+DATABASE_URL=
+JWT_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
+EMAIL_SEND=
+EMAIL_SEND_PASSWORD=
+PUSH_NOTIFICATION_EMAIL=

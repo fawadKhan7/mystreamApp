@@ -1,0 +1,13 @@
+You Will require these keys in your .env file
+
+PORT=your port number
+DATABASE_URL=your database url
+JWT_SECRET=your jwt secret key
+GOOGLE_CLIENT_ID= your google client id
+GOOGLE_CLIENT_SECRET=your google client secret key
+GOOGLE_CALLBACK_URL= your google callback url
+VAPID_PUBLIC_KEY= your vapid public key for push notifications
+VAPID_PRIVATE_KEY= your vapid private key for push notifications
+PUSH_NOTIFICATION_EMAIL= your push notification email for emails send to offline users
+EMAIL_SEND= your email for emails send to offline users
+EMAIL_SEND_PASSWORD= your email password for emails send to offline users

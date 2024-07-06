@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Testing</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <style>
+        /* CSS for chat tab and messages area */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            /* Adjust height as needed */
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .chat-message {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Stream Testing</h1>
+    <div>
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" placeholder="Enter User ID">
+    </div>
+    <div>
+        <label for="channelId">Channel ID:</label>
+        <input type="text" id="channelId" placeholder="Enter Channel ID">
+    </div>
+    <div>
+        <label for="message">Message:</label>
+        <input type="text" id="message" placeholder="Enter Message">
+        <button onclick="sendMessage()">Send Message</button>
+    </div>
+    <button onclick="joinSocket()">Join Socket</button>
+    <button onclick="joinChannel()">Join Channel</button>
+    <button onclick="startStream()">Start Stream</button>
+    <button onclick="promoteUser()">Promote User to Admin</button>
+    <button onclick="demoteUser()">Demote User from Admin</button>
+
+    <!-- Chat tab and messages area -->
+    <div class="chat-container" id="chatContainer" style="display: none;">
+        <h2>Chat</h2>
+        <div id="chatMessages"></div>
+    </div>
+
+    <script>
+        let socket;
+
+        function joinSocket() {
+            const userId = document.getElementById('userId').value;
+            socket = io({ query: { userId } });
+
+            socket.on('connect', () => {
+                console.log(`Connected to socket as User ${userId}`);
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Disconnected from socket');
+            });
+
+            // Listen for new messages
+            socket.on('newMessage', (data) => {
+                console.log('New message:', data);
+                // Update UI to display new message
+                const { message, userId } = data;
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `[User ${userId}]: ${message}`;
+                document.getElementById('chatMessages').appendChild(messageElement);
+
+                // Automatically scroll to bottom of chat messages
+                document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+            });
+
+            // Listen for user promotion to admin
+            socket.on('userPromotedToAdmin', (data) => {
+                console.log('User promoted to admin:', data);
+                // Update UI or show notification for user promotion
+            });
+
+            // Listen for user demotion from admin
+            socket.on('userDemotedFromAdmin', (data) => {
+                console.log('User demoted from admin:', data);
+                // Update UI or show notification for user demotion
+            });
+        }
+
+        function joinChannel() {
+            const channelId = document.getElementById('channelId').value;
+            const userId = document.getElementById('userId').value; // Retrieve userId from input field
+            socket.emit('joinChannel', { userId, channelId });
+            console.log(`Joined channel ${channelId}`);
+
+            // Show chat tab after joining channel
+            document.getElementById('chatContainer').style.display = 'block';
+        }
+
+        function startStream() {
+            const channelId = document.getElementById('channelId').value;
+            const userId = document.getElementById('userId').value;
+            socket = io({ query: { ...socket.io.opts.query, channelId } });
+            fetch('/api/channel/start-stream', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ channelId, userId })
+            }).then(response => {
+                if (response.ok) {
+                    console.log(`Started streaming on channel ${channelId}`);
+                    socket.emit('startStream', { channelId });
+                } else {
+                    console.error('Failed to start stream');
+                }
+            });
+        }
+
+        function sendMessage() {
+            const userId = document.getElementById('userId').value;
+            const channelId = document.getElementById('channelId').value;
+            const message = document.getElementById('message').value;
+            socket.emit('sendMessage', { userId, channelId, message });
+            console.log(`Sent message "${message}" to channel ${channelId}`);
+
+            // Clear message input after sending
+            document.getElementById('message').value = '';
+        }
+
+        function promoteUser() {
+            const userId = document.getElementById('userId').value;
+            const channelId = document.getElementById('channelId').value;
+            const targetUserId = prompt('Enter user ID to promote to admin:');
+            socket.emit('promoteUserToAdmin', { userId, channelId, targetUserId });
+        }
+
+        function demoteUser() {
+            const userId = document.getElementById('userId').value;
+            const channelId = document.getElementById('channelId').value;
+            const targetUserId = prompt('Enter user ID to demote from admin:');
+            socket.emit('demoteUserFromAdmin', { userId, channelId, targetUserId });
+        }
+    </script>
+</body>
+
+</html>
